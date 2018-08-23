@@ -129,7 +129,7 @@
 
 \whiledo{\NOT \( \boolean{done} \AND \value{day}=1 \) }{
 	\ifthenelse{\value{day}=1}{%
-		{\noindent \large \monthName{\value{month}}\hfill\hodeshName{\value{hodesh}}} \\
+		{\noindent \large \bfseries \monthName{\value{month}}\hfill\hodeshName{\value{hodesh}}} \\
 		\rule{\linewidth}{1pt}
 		
 		\vspace{-0.3em}
@@ -140,7 +140,7 @@
 			
 			\arabic{date} \hfill \arabic{yom}
 			
-			Six days shalt thou labor, but the seventh day shall be a Sabbath unto the LORD.
+			{\itshape Six days shalt thou labor, but the seventh day shall be a Sabbath unto the LORD.}
 			
 			\break }{%
 			\rule{\linewidth}{1pt} 
