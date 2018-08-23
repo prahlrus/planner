@@ -1,0 +1,157 @@
+%!TEX TS-program = xelatex
+%!TEX encoding = UTF-8 Unicode
+
+\documentclass[12pt]{book}
+
+\usepackage{ifthen,multirow}
+\usepackage[
+	inner=0.5in,
+	outer=0.25in,
+	top=0.25in,
+	bottom=0.25in,
+	paperwidth=5.5in, 	
+	paperheight=8.5in]{geometry}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% VARIABLES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcounter{day}
+\setcounter{day}{1} 	% always begin on a sunday
+
+\newcounter{hodesh}		% lunar month
+\newcounter{month}		% solar month
+
+\newcounter{yom}		% day of the lunar month
+\newcounter{date}		% day of the solar month
+
+\newboolean{meuberes}		% is it an intercalated lunar year?
+\newboolean{leap}			% is it an intercalated solar year?
+
+\newboolean{longmarheshvan}	% is lunar month 10 30 days instead of 29?
+\newboolean{shortkislev}	% is lunar month 9 29 days instead of 30?
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MACROS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\nextyom}{ %
+	\ifthenelse{ \value{yom}=29 }{%
+		\ifthenelse{ \(\value{hodesh}=12 \AND \NOT \boolean{meuberes}\) \OR \value{hodesh}=13 }{%
+    		\setcounter{hodesh}{1}\setcounter{yom}{1}}{%
+			\ifthenelse{ \value{hodesh}=2 \OR \value{hodesh}=4 \OR \value{hodesh}=6 \OR \(\value{hodesh}=8 \AND \NOT \boolean{longmarheshvan}\) \OR \(\value{hodesh}=9 \AND  \boolean{shortkislev}\) \OR \value{hodesh}=10}{%
+				\stepcounter{hodesh}\setcounter{yom}{1}}{\stepcounter{yom}}}}{%
+		\ifthenelse{ \value{yom}=30 }{ \stepcounter{hodesh}\setcounter{yom}{1} }{%
+			\stepcounter{yom} } } }
+
+\newcommand{\nextdate}{ %
+	\ifthenelse{ \value{date}=31 }{%
+		\setcounter{date}{1}
+		\ifthenelse{ \value{month}=12}{%
+			\setcounter{month}{1} }{%
+			\stepcounter{month} } }{%
+		\ifthenelse{ \value{date}=30 \AND \( \value{month}=4 \OR \value{month}=6 \OR \value{month}=9 \OR \value{month}=11 \) }{%
+			\stepcounter{month}\setcounter{date}{1} }{%
+			\ifthenelse{ \value{month}=2 \AND \( \( \value{date}=28 \AND \NOT \boolean{leap} \) \OR \value{date}=29 \) }{%
+				\stepcounter{month}\setcounter{date}{1} }{% 
+				\stepcounter{date} } } } }
+
+\newcommand{\hodeshName}[1]{%
+\ifthenelse{#1=1}{Nisan}{%
+\ifthenelse{#1=2}{Iyyar}{%
+\ifthenelse{#1=3}{Sivan}{%
+\ifthenelse{#1=4}{Tammuz}{%
+\ifthenelse{#1=5}{Av}{%
+\ifthenelse{#1=6}{Elul}{%
+\ifthenelse{#1=7}{Tishrey}{%
+\ifthenelse{#1=8}{Marheshvan}{%
+\ifthenelse{#1=9}{Kislev}{%
+\ifthenelse{#1=10}{Tevet}{%
+\ifthenelse{#1=11}{Shvat}{%
+\ifthenelse{#1=12}{%
+	\ifthenelse{\boolean{meuberes}}{Adar Alef}{Adar}}{%
+\ifthenelse{#1=13}{Adar Beys}{}}}}}}}}}}}}}}
+
+\newcommand{\monthName}[1]{%
+\ifthenelse{#1=1}{January}{%
+\ifthenelse{#1=2}{February}{%
+\ifthenelse{#1=3}{March}{%
+\ifthenelse{#1=4}{April}{%
+\ifthenelse{#1=5}{May}{%
+\ifthenelse{#1=6}{June}{%
+\ifthenelse{#1=7}{July}{%
+\ifthenelse{#1=8}{August}{%
+\ifthenelse{#1=9}{September}{%
+\ifthenelse{#1=10}{October}{%
+\ifthenelse{#1=11}{November}{%
+\ifthenelse{#1=12}{December}{}}}}}}}}}}}}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%% INITIALIZATION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Start August 26th 2018/15 Elul 5778
+
+\setcounter{month}{8}
+\setcounter{date}{26}
+
+\setcounter{hodesh}{6}
+\setcounter{yom}{15}
+
+\setboolean{meuberes}{true}
+\setboolean{leap}{false}
+
+\setboolean{longmarheshvan}{true}
+\setboolean{shortkislev}{false}
+
+\setlength\parindent{0pt}
+\setlength\parskip{0pt}
+
+\begin{document}
+
+\pagestyle{empty}
+
+\vspace*{0.25\textheight}
+
+\begin{center}
+{\Huge \bfseries Planner of Weeks}
+
+\vspace{1em}
+
+\rule{4em}{0.5pt}
+
+\vspace{1em}
+
+{\itshape for the 2018-19/5778-79 school year}
+\end{center}
+
+\vfill
+
+\break
+
+\newboolean{done}
+\setboolean{done}{false}
+
+\whiledo{\NOT \( \boolean{done} \AND \value{day}=1 \) }{
+	\ifthenelse{\value{day}=1}{%
+		{\noindent \large \monthName{\value{month}}\hfill\hodeshName{\value{hodesh}}} \\
+		\rule{\linewidth}{1pt}
+		
+		\vspace{-0.3em}
+		
+		\rule[-5em]{1pt}{6em} \arabic{date} \hfill \arabic{yom} \rule[-5em]{1pt}{6em}}{%
+		\ifthenelse{\value{day}=7}{%
+			\rule{\linewidth}{1pt}
+			
+			\arabic{date} \hfill \arabic{yom}
+			
+			Six days shalt thou labor, but the seventh day shall be a Sabbath unto the LORD.
+			
+			\break }{%
+			\rule{\linewidth}{1pt} 
+			
+			\vspace{-0.3em}
+			
+			\rule[-6em]{1pt}{7em} \arabic{date} \hfill \arabic{yom} \rule[-6em]{1pt}{7em} \hspace{20em} \rule[-6em]{1pt}{7em}} }%
+	\ifthenelse{\value{day}=7}{\setcounter{day}{1}}{\stepcounter{day}}%
+	\nextyom%
+	\nextdate%
+	\ifthenelse{\value{month}=6 \AND \value{date}=12}{\setboolean{done}{true}}{}%
+}
+
+\end{document}
